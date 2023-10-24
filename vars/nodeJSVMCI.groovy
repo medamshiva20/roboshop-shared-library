@@ -1,10 +1,11 @@
+def call(Map configMap){
+    //mapName.get("key-name")
+    def component = configMap.get("component")
+    echo "component is: $component"
 pipeline {
     agent { node { label 'AGENT-1' } }
     environment{
         packageVersion = ''
-    }
-    parameters {
-        string(name: 'component', defaultValue: '1.0.1', description: 'Which component?')
     }
     stages{
         stage('Get Version')
@@ -45,7 +46,7 @@ pipeline {
             steps{
                 sh '''
                 ls -ltrh
-                zip -r ${params.component}.zip ./* --exclude=.git --exclude=.zip
+                zip -r ${component}.zip ./* --exclude=.git --exclude=.zip
                 '''
             }
         }
@@ -65,12 +66,12 @@ pipeline {
                     nexusUrl: '172.31.34.61:8081/',
                     groupId: 'com.roboshop',
                     version: "$packageVersion",
-                    repository: "${params.component}",
+                    repository: "${component}",
                     credentialsId: 'nexus-auth',
                     artifacts: [
-                        [artifactId: "${params.component}",
+                        [artifactId: "${component}",
                         classifier: '',
-                        file: "${params.component}.zip",
+                        file: "${component}.zip",
                         type: 'zip']
                     ]
                 )
@@ -86,7 +87,7 @@ pipeline {
                         def params = [
                             string(name: 'version', value: "$packageVersion")
                         ]
-                        build job: "../${params.component}-deploy", wait: true, parameters: params
+                        build job: "../${component}-deploy", wait: true, parameters: params
                 }
             }
         }
@@ -97,4 +98,5 @@ pipeline {
                 deleteDir()
             }
         }
+ }
 }
