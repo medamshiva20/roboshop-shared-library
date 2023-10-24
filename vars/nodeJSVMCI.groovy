@@ -7,7 +7,7 @@ pipeline {
         string(name: 'component', defaultValue: '1.0.1', description: 'Which component?')
     }
     stages{
-        stage('Git Version')
+        stage('Get Version')
         {
             steps{
                 script{
