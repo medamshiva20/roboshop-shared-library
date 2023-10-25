@@ -12,6 +12,7 @@ pipeline {
         {
             steps{
                 script{
+                    //you can get the package version dynamically from package.json
                     def packageJson = readJSON(file: 'package.json')
                     packageVersion = packageJson.version
                     echo "version: ${packageVersion}"
